@@ -61,16 +61,16 @@ NSString * const IPDIZHI = @"http://192.168.1.4:14500/gdqh";
     return self;
 }
 
-//建立长连接
--(void)connectServer{
-    if(self.webScoket){
-        return;
-    }
-    
-    self.webScoket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:IPDIZHI]];
-    self.webScoket.delegate = self;
-    [self.webScoket open];
-}
+////建立长连接
+//-(void)connectServer{
+//    if(self.webScoket){
+//        return;
+//    }
+//    
+//    self.webScoket = [[SRWebSocket alloc] initWithURL:[NSURL URLWithString:IPDIZHI]];
+//    self.webScoket.delegate = self;
+//    [self.webScoket open];
+//}
 
 
 

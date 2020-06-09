@@ -20,6 +20,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong)NSArray *textIndex;
 
+@property (weak, nonatomic) IBOutlet UIButton *submitButton;
+
+/// 提交
+@property (nonatomic, copy) void (^submitBlock)(void);
+
 /// 单个显示完毕
 @property (nonatomic, copy)void (^showEndBlock) (void);
 
@@ -43,6 +48,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// 显示2行
 -(void)threeAction;
+
+
+/// 1成功  2失败 其他隐藏
+//-(void)setUpState:(NSInteger)state;
+
+///只显示文字背景  不现实显示
+-(void)shwoBackground;
 
 @end
 

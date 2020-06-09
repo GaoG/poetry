@@ -75,6 +75,12 @@
                         <constraint firstAttribute="height" constant="545" id="bVG-jT-rdY"/>
                     </constraints>
                 </imageView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oVr-nT-Ouc">
+                    <rect key="frame" x="0.0" y="0.0" width="1366" height="1024"/>
+                    <connections>
+                        <action selector="submitButtonAction:" destination="iN0-l3-epB" eventType="touchUpInside" id="MKf-Av-k5c"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
@@ -83,28 +89,33 @@
                 <constraint firstItem="0vl-Ky-Ep6" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="76j-EY-GeC"/>
                 <constraint firstItem="mbk-Ue-chq" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="E9c-jc-oZ7"/>
                 <constraint firstItem="0vl-Ky-Ep6" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="Kow-p6-qMX"/>
+                <constraint firstAttribute="trailing" secondItem="oVr-nT-Ouc" secondAttribute="trailing" id="Lk1-oI-8C4"/>
+                <constraint firstAttribute="bottom" secondItem="oVr-nT-Ouc" secondAttribute="bottom" id="Rbm-cd-JAw"/>
                 <constraint firstItem="mbk-Ue-chq" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="VgP-6V-B0K"/>
                 <constraint firstItem="8Uc-eU-OhT" firstAttribute="centerY" secondItem="iN0-l3-epB" secondAttribute="centerY" id="bPq-Bs-Ddl"/>
                 <constraint firstItem="mbk-Ue-chq" firstAttribute="bottom" secondItem="KWm-NX-KM0" secondAttribute="bottom" constant="-100" id="lrj-aX-LFR"/>
+                <constraint firstItem="oVr-nT-Ouc" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="mdT-bu-v2l"/>
                 <constraint firstAttribute="trailing" secondItem="KWm-NX-KM0" secondAttribute="trailing" constant="100" id="r74-Tr-46Z"/>
                 <constraint firstAttribute="bottom" secondItem="eGl-H3-i2K" secondAttribute="bottom" id="rMx-mw-C2n"/>
+                <constraint firstItem="oVr-nT-Ouc" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="sYT-DK-yu0"/>
                 <constraint firstItem="eGl-H3-i2K" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="ysU-1C-D9g"/>
                 <constraint firstAttribute="trailing" secondItem="eGl-H3-i2K" secondAttribute="trailing" id="z2I-QJ-K36"/>
             </constraints>
             <connections>
                 <outlet property="chenggong" destination="KWm-NX-KM0" id="IOm-Of-Yj0"/>
                 <outlet property="chineseBgView" destination="mbk-Ue-chq" id="K2I-6w-E2K"/>
-                <outlet property="shibai" destination="8Uc-eU-OhT" id="ZVa-2h-Q6M"/>
+                <outlet property="shibai" destination="8Uc-eU-OhT" id="IaY-aq-wGx"/>
+                <outlet property="submitButton" destination="oVr-nT-Ouc" id="cVJ-ug-F77"/>
             </connections>
             <point key="canvasLocation" x="138.79941434846265" y="116.60156249999999"/>
         </view>
     </objects>
     <resources>
         <image name="bg_icon" width="2732" height="2048"/>
-        <image name="chenggong" width="721" height="698"/>
+        <image name="chenggong" width="751" height="728"/>
         <image name="rouleau_left" width="185" height="1046"/>
         <image name="rouleau_paper" width="2271" height="850"/>
         <image name="rouleau_right" width="185" height="1045"/>
-        <image name="shibai" width="2142" height="1090"/>
+        <image name="shibai" width="1845" height="914"/>
     </resources>
 </document>

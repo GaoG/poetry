@@ -12,13 +12,9 @@
 #import "CountDownView.h"
 #import "StartView.h"
 #import "SubmitView.h"
-#import "NumberScrollView.h"
 #import "ConfigHeader.h"
-#import "ProgressView.h"
 #import "TipsView.h"
-#import "SecondViewController.h"
 #import "WebSocketManager.h"
-#import "ShowNumberView.h"
 #import "GCDAsyncUdpSocket.h"
 #import "PoetryView.h"
 
@@ -38,14 +34,8 @@
 @property (nonatomic, strong)TipsView *tipsView;
 
 
-@property (nonatomic, strong)NumberScrollView *numberScrollView;
-
-@property (nonatomic, strong)ShowNumberView *showNumberView;
-
 @property (nonatomic, strong)PoetryView *poetryView;
 
-
-@property (nonatomic, strong)ProgressView *progressView;
 
 @property (nonatomic, strong)NSMutableArray *viewArr;
 
@@ -79,8 +69,7 @@
     
     [self initSocket];
     
-    self.progressView.frame = self.view.bounds;
-    [self.view addSubview:self.progressView];
+ 
     
     
     self.configView.frame = self.view.bounds;
@@ -103,21 +92,17 @@
     //    [self.submitView start];
     
     
-    
-    self.numberScrollView.frame = self.view.bounds;
-    [self.view addSubview:self.numberScrollView];
+
     
     self.tipsView.frame = self.view.bounds;
     [self.view addSubview:self.tipsView];
     
-    self.showNumberView.frame = self.view.bounds;
-    [self.view addSubview:self.showNumberView];
     
     self.poetryView.frame = self.view.bounds;
     [self.view addSubview:self.poetryView];
     
     
-    [self.viewArr addObjectsFromArray:@[self.configView,self.configView,self.countDownView,self.startView,self.submitView,self.numberScrollView,self.progressView,self.tipsView,self.showNumberView,self.poetryView]];
+    [self.viewArr addObjectsFromArray:@[self.configView,self.configView,self.countDownView,self.startView,self.submitView,self.tipsView,self.poetryView]];
     
     
     [self operateView:self.configView withState:NO];
@@ -226,7 +211,7 @@
         NSString *stepName = dataDic[@"step"];
         
         
-        if ([result [@"messageType"]intValue ] == 255 &&([dataDic[@"message"]isEqualToString:@"重连成功"] || [dataDic[@"message"]isEqualToString:@"注册成功"])) {
+        if ([result [@"messageType"]intValue ] == 255&& ![dataDic[@"message"]isKindOfClass:[NSDictionary class]] &&([dataDic[@"message"]isEqualToString:@"重连成功"] || [dataDic[@"message"]isEqualToString:@"注册成功"])) {
             /// 登陆成功
             UIAlertView *al = [[UIAlertView alloc]initWithTitle:@"提示" message:string delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
             [al show];
@@ -249,6 +234,13 @@
             
             [self.countDownView countDownBegin:3];
             
+        }else if ([result [@"messageType"]intValue ] == 34 &&[stepName isEqualToString:@"step6"]&&!self.isFail){
+            
+            /// 验证页面
+            [self.poetryView shwoBackground];
+            [self operateView:self.poetryView withState:NO];
+            
+            
         }else if ([result [@"messageType"]intValue ] == 34 &&[stepName isEqualToString:@"step2"]&&!self.isFail){
             
             /// 获取诗词数据
@@ -260,18 +252,19 @@
             
             self.poetryView.textIndex = textIndex;
             self.poetryView.textArr =textArr;
+            /// 收到题观众端显示积分页面
+            [self sendGroupMessage:@"60"];
             
-            
-        }else if ([result [@"messageType"]intValue ] == 255 &&[dataDic[@"message"]isEqualToString:@"抢答成功"]&&!self.isFail){
+        }else if ([result [@"messageType"]intValue ] == 255&& [dataDic[@"message"]isKindOfClass:[NSDictionary class]] &&[dataDic[@"message"][@"message"]isEqualToString:@"抢答成功"]&&!self.isFail){
             /// 抢答结果 成功成功
             
-            [self.tipsView.tipsLabel setTitle:@"抢答成功" forState:UIControlStateNormal];
+//            [self.tipsView.tipsLabel setTitle:@"抢答成功" forState:UIControlStateNormal];
             
             [self operateView:self.tipsView withState:NO];
             [self sendGroupMessage:@"10"];
             
             
-        }else if ([result [@"messageType"]intValue ] == 255 &&[dataDic[@"message"]isEqualToString:@"抢答失败"]&&!self.isFail){
+        }else if ([result [@"messageType"]intValue ] == 255&& [dataDic[@"message"]isKindOfClass:[NSDictionary class]] &&[dataDic[@"message"][@"message"]isEqualToString:@"抢答失败"]&&!self.isFail){
             /// 抢答结果 成功失败
            
 //            [self.tipsView.tipsLabel setTitle:@"抢答失败" forState:UIControlStateNormal];
@@ -315,7 +308,6 @@
             
         }else if ([result [@"messageType"]intValue ] == 32 &&[dataDic[@"message"]isEqualToString:@"回答失败"]&&!self.isFail){
             ///回答失败
-
             
             self.poetryView.shibai.hidden = NO;
             self.poetryView.chenggong.hidden = YES;
@@ -349,6 +341,14 @@
             // 显示第3行
             [self operateView:self.poetryView withState:NO];
             [self.poetryView threeAction];
+            
+        }else if ([result [@"messageType"]intValue ] == 32 &&[[NSString stringWithFormat:@"%@",dataDic[@"message"]] containsString:@"总分"]&&!self.isFail){
+            // 分数
+            NSString *numberStr = [dataDic[@"message"] stringByReplacingOccurrencesOfString:@"总分" withString:@""];
+            
+            self.myNumber = [numberStr integerValue];
+            ///显示分数
+            [self sendGroupMessage:@"poetryNumber"];
             
         }
         
@@ -426,6 +426,7 @@
             @strongify(self)
             self.poetryView.shibai.hidden = YES;
             self.poetryView.chenggong.hidden = YES;
+//            [self.poetryView setUpState:0];
             [self operateView:self.poetryView withState:NO];
             [self.poetryView scrollWithSpace:self.span];
 
@@ -454,10 +455,24 @@
     if (!_poetryView) {
         _poetryView = [[[NSBundle mainBundle]loadNibNamed:@"PoetryView" owner:nil options:nil]lastObject];
         @weakify(self)
-        _poetryView.showEndBlock = ^{
+//        _poetryView.showEndBlock = ^{
+//            @strongify(self)
+//            [self operateView:self.submitView withState:NO];
+//            [self.submitView start];
+//        };
+        _poetryView.submitBlock = ^{
             @strongify(self)
-            [self operateView:self.submitView withState:NO];
-            [self.submitView start];
+            
+            NSDictionary *dic = @{
+                                  @"name":@"god",
+                                  @"age":[NSNumber numberWithInt:[self.myID intValue]],
+                                  @"occupation":@"god",
+                                  @"img":[NSNull null]
+                                  };
+            
+            
+            [self.webSocketManager sendDataToServerWithMessageType:@"80" data:dic];
+            
         };
         
 //        _poetryView.lineShowEndBlock = ^{
@@ -488,53 +503,29 @@
     
     if (!_submitView) {
         _submitView = [[[NSBundle mainBundle]loadNibNamed:@"SubmitView" owner:nil options:nil]lastObject];
-        @weakify(self)
-        _submitView.submitBlock = ^{
-            @strongify(self)
-            [self sendGroupMessage:@"10"];
-            
-            NSDictionary *dic = @{
-                                  @"name":@"god",
-                                  @"age":[NSNumber numberWithInt:[self.myID intValue]],
-                                  @"occupation":@"god",
-                                  @"img":[NSNull null] 
-                                  };
-            
-            
-            [self.webSocketManager sendDataToServerWithMessageType:@"80" data:dic];
-            
-        };
+//        @weakify(self)
+//        _submitView.submitBlock = ^{
+//            @strongify(self)
+//
+//            NSDictionary *dic = @{
+//                                  @"name":@"god",
+//                                  @"age":[NSNumber numberWithInt:[self.myID intValue]],
+//                                  @"occupation":@"god",
+//                                  @"img":[NSNull null]
+//                                  };
+//
+//
+//            [self.webSocketManager sendDataToServerWithMessageType:@"80" data:dic];
+//
+//        };
     }
     
     
     return _submitView;
 }
 
--(NumberScrollView *)numberScrollView {
-    
-    if (!_numberScrollView) {
-        _numberScrollView = [[[NSBundle mainBundle]loadNibNamed:@"NumberScrollView" owner:nil options:nil]lastObject];
-        @weakify(self)
-        _numberScrollView.scrollEndBlock = ^{
-            @strongify(self)
-            [self operateView:self.submitView withState:NO];
-            [self.submitView start];
-        };
-    }
-    
-    return _numberScrollView;
-}
 
 
--(ProgressView *)progressView {
-    
-    if (!_progressView) {
-        _progressView = [[[NSBundle mainBundle]loadNibNamed:@"ProgressView" owner:nil options:nil]lastObject];
-        
-    }
-    
-    return _progressView;
-}
 
 -(NSMutableArray *)viewArr{
     
@@ -565,21 +556,6 @@
     return _tipsView;
 }
 
--(ShowNumberView *)showNumberView {
-    
-    if (!_showNumberView) {
-        _showNumberView = [[[NSBundle mainBundle]loadNibNamed:@"ShowNumberView" owner:nil options:nil]lastObject];
-        @weakify(self)
-        _showNumberView.showEndBlock = ^{
-            @strongify(self)
-            [self operateView:self.submitView withState:NO];
-            [self.submitView start];
-        };
-        
-    }
-    
-    return _showNumberView;
-}
 
 
 
