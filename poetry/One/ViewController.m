@@ -253,7 +253,7 @@
             self.poetryView.textIndex = textIndex;
             self.poetryView.textArr =textArr;
             /// 收到题观众端显示积分页面
-            [self sendGroupMessage:@"60"];
+//            [self sendGroupMessage:@"60"];
             
         }else if ([result [@"messageType"]intValue ] == 255&& [dataDic[@"message"]isKindOfClass:[NSDictionary class]] &&[dataDic[@"message"][@"message"]isEqualToString:@"抢答成功"]&&!self.isFail){
             /// 抢答结果 成功成功
